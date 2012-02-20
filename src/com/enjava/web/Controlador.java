@@ -5,8 +5,11 @@ import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.enjava.Alumno;
 import com.enjava.EMF;
@@ -38,5 +41,22 @@ public class Controlador {
     	model.addAttribute("message", "Hello World!"+alumno);
     	return "helloWorld";
     }
+    
+    @RequestMapping(value="/form")
+    public String helloForm( Model model) {
+    	model.addAttribute("alumno", alumno);
+    	return "helloForm";
+    }
+    @RequestMapping(value="/reciboForm", method=RequestMethod.POST)
+    public String reciboForm( Model model , @ModelAttribute("alumno")Alumno a) {
+    	System.out.println("Hello World!"+a.getNombre());
+    	EntityManager em = emf.getEM();
+    	em.getTransaction().begin();
+    	em.merge(a);
+    	em.getTransaction().commit();
+
+    	return "alumnoModificado";
+    }
+
 
 }
